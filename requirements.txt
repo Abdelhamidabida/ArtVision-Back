@@ -12,3 +12,4 @@ passlib[bcrypt]
 bcrypt
 pymysql
 requests
+pydantic[email]
