@@ -1,15 +1,43 @@
+# ==== 🚀 FASTAPI & SERVEUR ====
 fastapi
-uvicorn[standard]
-pydantic
-sqlalchemy
-python-multipart
-pillow
+uvicorn
+
+# ==== 🧠 IA / Machine Learning ====
+tensorflow-cpu
 numpy
-tensorflow
-cloudinary
-python-jose
-passlib[bcrypt]
+pandas
+scikit-learn
+
+# ==== 🤗 Hugging Face (captioning BLIP) ====
+transformers
+torch
+sentencepiece
+safetensors
+
+# ==== 🖼️ Traitement d'images ====
+pillow
+opencv-python
+
+# ==== 📦 Gestion des fichiers / formulaires ====
+python-multipart
+
+# ==== 🔐 Authentification / Sécurité ====
 bcrypt
+passlib[bcrypt]
+python-jose[cryptography]
+
+# ==== 🗄️ Base de données ====
+sqlalchemy
 pymysql
-requests
+
+# ==== 🌩️ Cloudinary ====
+cloudinary
+
+# ==== ⚙️ Environnement / Variables ====
+python-dotenv
+
+# ==== 📧 Email validation (Pydantic) ====
 pydantic[email]
+
+# ==== 🌐 Requêtes externes (utile pour tests HTTP) ====
+requests
