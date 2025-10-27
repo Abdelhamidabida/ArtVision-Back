@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+pydantic
+sqlalchemy
+python-multipart
+pillow
+numpy
+tensorflow
+cloudinary
+python-jose
+passlib[bcrypt]
+bcrypt

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+models/*.h5
+models/*.weights.h5
+models/*.pt
+.env
