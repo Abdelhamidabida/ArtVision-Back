@@ -10,3 +10,4 @@ cloudinary
 python-jose
 passlib[bcrypt]
 bcrypt
+pymysql
