@@ -39,5 +39,5 @@ python-dotenv
 # ==== 📧 Email validation (Pydantic) ====
 pydantic[email]
 
-# ==== 🌐 Requêtes externes (utile pour tests HTTP) ====
+
 requests
