@@ -11,3 +11,4 @@ python-jose
 passlib[bcrypt]
 bcrypt
 pymysql
+requests
