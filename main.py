@@ -53,7 +53,7 @@ def get_db():
 # =====================================================
 MODEL_BINARY_PATH = "models/binary_best_df.h5"
 MODEL_MULTI_PATH = "models/multi_balanced_best.h5"
-DENOISING_WEIGHTS_PATH = "models/final_denoising_weights.weights.h5"
+
 
 print("📦 Chargement des modèles...")
 binary_model = load_model(MODEL_BINARY_PATH)
@@ -63,54 +63,6 @@ print("✅ Modèles de classification chargés avec succès !")
 
 
 
-
-# --- Reconstruction du modèle de débruitage ---
-def build_denoising_model(input_shape=(224, 224, 3)):
-    inputs = layers.Input(shape=input_shape)
-
-    # Encoder
-    conv1 = layers.Conv2D(64, (3,3), activation='relu', padding='same')(inputs)
-    conv1 = layers.Conv2D(64, (3,3), activation='relu', padding='same')(conv1)
-    pool1 = layers.MaxPooling2D((2,2))(conv1)
-
-    conv2 = layers.Conv2D(128, (3,3), activation='relu', padding='same')(pool1)
-    conv2 = layers.Conv2D(128, (3,3), activation='relu', padding='same')(conv2)
-    pool2 = layers.MaxPooling2D((2,2))(conv2)
-
-    conv3 = layers.Conv2D(256, (3,3), activation='relu', padding='same')(pool2)
-    conv3 = layers.Conv2D(256, (3,3), activation='relu', padding='same')(conv3)
-    pool3 = layers.MaxPooling2D((2,2))(conv3)
-
-    conv4 = layers.Conv2D(512, (3,3), activation='relu', padding='same')(pool3)
-    conv4 = layers.Conv2D(512, (3,3), activation='relu', padding='same')(conv4)
-
-    # Decoder
-    up1 = layers.UpSampling2D((2,2))(conv4)
-    up1 = layers.Conv2D(256, (2,2), activation='relu', padding='same')(up1)
-    merge1 = layers.Concatenate()([conv3, up1])
-    conv5 = layers.Conv2D(256, (3,3), activation='relu', padding='same')(merge1)
-    conv5 = layers.Conv2D(256, (3,3), activation='relu', padding='same')(conv5)
-
-    up2 = layers.UpSampling2D((2,2))(conv5)
-    up2 = layers.Conv2D(128, (2,2), activation='relu', padding='same')(up2)
-    merge2 = layers.Concatenate()([conv2, up2])
-    conv6 = layers.Conv2D(128, (3,3), activation='relu', padding='same')(merge2)
-    conv6 = layers.Conv2D(128, (3,3), activation='relu', padding='same')(conv6)
-
-    up3 = layers.UpSampling2D((2,2))(conv6)
-    up3 = layers.Conv2D(64, (2,2), activation='relu', padding='same')(up3)
-    merge3 = layers.Concatenate()([conv1, up3])
-    conv7 = layers.Conv2D(64, (3,3), activation='relu', padding='same')(merge3)
-    conv7 = layers.Conv2D(64, (3,3), activation='relu', padding='same')(conv7)
-
-    decoded = layers.Conv2D(3, (1,1), activation='sigmoid', padding='same')(conv7)
-
-    return models.Model(inputs, decoded, name="UNet_Denoising_Autoencoder")
-
-# Charger les poids
-denoising_model = build_denoising_model()
-denoising_model.load_weights(DENOISING_WEIGHTS_PATH)
-print("✅ Modèle de débruitage chargé avec succès !")
 
 # =====================================================
 # 🏷️ CLASSES MULTI-CLASSES
@@ -255,17 +207,7 @@ async def create_prediction(
         predicted_class = CATEGORIES[int(np.argmax(pred))]
         confidence = float(np.max(pred))
 
-    elif prediction_type.lower() == "denoising":
-        denoised = denoising_model.predict(img_array, verbose=0)[0]
-        denoised = (denoised * 255).astype(np.uint8)
-        denoised_img = Image.fromarray(denoised)
-        temp_path = "temp_denoised.png"
-        denoised_img.save(temp_path)
-        upload_result = cloudinary.uploader.upload(temp_path, folder="artvision/denoised")
-        os.remove(temp_path)
-        image_url = upload_result["secure_url"]
-        predicted_class = "Image débruitée"
-        confidence = 1.0
+   
     else:
         raise HTTPException(status_code=400, detail="prediction_type doit être 'binaire', 'multiclass' ou 'denoising'")
 
